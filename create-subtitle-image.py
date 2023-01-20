@@ -175,7 +175,7 @@ def create_box(bb, color, opacity=0.3, margin_x=0, margin_y=0):
 
 DEFAULT_FONT_SIZE = 48
 DEFAULT_FONT_FAMILY = "BIZ UDGothic"
-DEFAULT_FONT_WEIGHT = "normal"
+DEFAULT_FONT_STYLE = "normal"
 DEFAULT_TEXT_ANCHOR = "middle"
 DEFAULT_LINE_SEP = 1.1
 COLOR_WHITE = "#000000"
@@ -195,7 +195,7 @@ DEFAULT_SHADOW_DY = 2.33645
 settings = {
     "font_size": DEFAULT_FONT_SIZE,
     "font_family": DEFAULT_FONT_FAMILY,
-    "font_weight": DEFAULT_FONT_WEIGHT,
+    "font_style": DEFAULT_FONT_STYLE,
     "text_color": COLOR_BLACK,
     "text_anchor": DEFAULT_TEXT_ANCHOR,
     "line_sep": DEFAULT_LINE_SEP,
@@ -218,9 +218,9 @@ parser.add_argument("--font-size", type=float, default=settings['font_size'],
                     help=f"字幕テキストのフォントサイズ(単位:pt). (デフォルト値: {settings['font_size']})")
 parser.add_argument("--font-family", type=str, default=settings['font_family'],
                     help=f"字幕テキストのフォントファミリー. (デフォルト値: {settings['font_family']})")
-parser.add_argument("--font-weight", choices=("normal", "bold", "lighter", "bolder", "100", "200", "300", "400", "500",
-                    "600", "700", "800", "900"), type=str, default=settings['font_weight'],
-                    help=f"字幕テキストのフォントの太さ. (デフォルト値: {settings['font_weight']})")
+parser.add_argument("--font-style", choices=("normal", "bold", "lighter", "bolder", "100", "200", "300", "400", "500",
+                    "600", "700", "800", "900"), type=str, default=settings['font_style'],
+                    help=f"字幕テキストのフォントのスタイル. (デフォルト値: {settings['font_style']})")
 parser.add_argument("--text-anchor", choices=("start", "middle", "end"),
                     type=str, default=settings['text_anchor'], help=f"テキストのアンカー. (デフォルト値: {settings['text_anchor']})")
 parser.add_argument("--line-sep", type=float, default=settings['line_sep'],
@@ -283,7 +283,7 @@ if settings["shadow_color"]:
 
 for item in items:
     text_group = create_text_group(item['lines'], base=[0, 0], font=settings["font_family"],
-                                   font_size=(settings["font_size"] * pt), font_weight=settings["font_weight"],
+                                   font_size=(settings["font_size"] * pt), font_style=settings["font_style"],
                                    fill=settings["text_color"], text_anchor=settings["text_anchor"])
     text_bb = None
     if settings["box_color"]:
