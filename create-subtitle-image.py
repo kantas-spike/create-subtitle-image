@@ -1,4 +1,5 @@
 import inkex
+import json
 import os
 import argparse
 from tempfile import TemporaryDirectory
@@ -157,75 +158,159 @@ def expand_path(path, base_dir):
         return os.path.abspath(os.path.join(epd_base_dir, epd_path))
 
 
+def create_shadow_filter(shadow_color, opacity=0.3, stdDeviation=3.125, dx=2.33645, dy=2.33645):
+    filter7285 = filter_effect(name='Drop Shadow', color_interpolation_filters='sRGB')
+    flood = filter7285.add('Flood', flood_opacity=opacity, flood_color=shadow_color)
+    composite1 = filter7285.add('Composite', src1=flood, src2='SourceGraphic', operator='in')
+    filter7285.add('GaussianBlur', src1=composite1, stdDeviation=stdDeviation)
+    offset = filter7285.add('Offset', dx=dx, dy=dy)
+    filter7285.add('Composite', src1='SourceGraphic', src2=offset, operator='over')
+    return filter7285
+
+
+def create_box(bb, color, opacity=0.3, margin_x=0, margin_y=0):
+    # print(bb, margin_x, margin_y)
+    return rect((bb.left - margin_x, bb.top - margin_y), (bb.right + margin_x, bb.bottom + margin_y), fill=color, opacity=opacity, stroke_width=0)
+
+
 DEFAULT_FONT_SIZE = 48
-DEFAULT_LINE_SEP = 1.1
 DEFAULT_FONT_FAMILY = "BIZ UDGothic"
 DEFAULT_FONT_WEIGHT = "normal"
 DEFAULT_TEXT_ANCHOR = "middle"
+DEFAULT_LINE_SEP = 1.1
 COLOR_WHITE = "#000000"
 COLOR_BLACK = "#FFFFFF"
 DEFAULT_OFFSET_RATE = 0.06
 DEFAULT_OFFSET_STROKE_RATE = 0.03
 DEFAULT_BASE_DIR = os.path.expanduser("~")
 DEFAULT_EXPORT_DIR = "~/tmp/create-subtitle-image"
+DEFAULT_BOX_MARGIN_X = 0.5
+DEFAULT_BOX_MARGIN_Y = 0.25
+DEFAULT_BOX_OPACITY = 0.3
+DEFAULT_SHADOW_OPACITY = 0.3
+DEFAULT_SHADOW_BLUR = 3.125
+DEFAULT_SHADOW_DX = 2.33645
+DEFAULT_SHADOW_DY = 2.33645
+
+settings = {
+    "font_size": DEFAULT_FONT_SIZE,
+    "font_family": DEFAULT_FONT_FAMILY,
+    "font_weight": DEFAULT_FONT_WEIGHT,
+    "text_color": COLOR_BLACK,
+    "text_anchor": DEFAULT_TEXT_ANCHOR,
+    "line_sep": DEFAULT_LINE_SEP,
+    "offset_rate": DEFAULT_OFFSET_RATE,
+    "offset_stroke_rate": DEFAULT_OFFSET_STROKE_RATE,
+    "offset_color": COLOR_WHITE,
+    "base_dir": DEFAULT_BASE_DIR,
+    "export_dir": DEFAULT_EXPORT_DIR,
+    "box_margin_x": DEFAULT_BOX_MARGIN_X,
+    "box_margin_y": DEFAULT_BOX_MARGIN_Y,
+    "box_opacity": DEFAULT_BOX_OPACITY,
+    "shadow_opacity": DEFAULT_SHADOW_OPACITY,
+    "shadow_blur_stddeviation": DEFAULT_SHADOW_BLUR,
+    "shadow_dx": DEFAULT_SHADOW_DX,
+    "shadow_dy": DEFAULT_SHADOW_DY,
+}
 
 parser = argparse.ArgumentParser(prog="create-subtitle-image")
-parser.add_argument("--font-size", type=float, default=DEFAULT_FONT_SIZE,
-                    help=f"字幕テキストのフォントサイズ(単位:pt). (デフォルト値: {DEFAULT_FONT_SIZE})")
-parser.add_argument("--line-sep", type=float, default=DEFAULT_LINE_SEP,
-                    help=f"字幕テキストの行間. (デフォルト値: {DEFAULT_LINE_SEP})")
-parser.add_argument("--font-family", type=str, default=DEFAULT_FONT_FAMILY,
-                    help=f"字幕テキストのフォントファミリー. (デフォルト値: {DEFAULT_FONT_FAMILY})")
+parser.add_argument("--font-size", type=float, default=settings['font_size'],
+                    help=f"字幕テキストのフォントサイズ(単位:pt). (デフォルト値: {settings['font_size']})")
+parser.add_argument("--font-family", type=str, default=settings['font_family'],
+                    help=f"字幕テキストのフォントファミリー. (デフォルト値: {settings['font_family']})")
 parser.add_argument("--font-weight", choices=("normal", "bold", "lighter", "bolder", "100", "200", "300", "400", "500",
-                    "600", "700", "800", "900"), type=str, default=DEFAULT_FONT_WEIGHT,
-                    help=f"字幕テキストのフォントの太さ. (デフォルト値: {DEFAULT_FONT_WEIGHT})")
+                    "600", "700", "800", "900"), type=str, default=settings['font_weight'],
+                    help=f"字幕テキストのフォントの太さ. (デフォルト値: {settings['font_weight']})")
 parser.add_argument("--text-anchor", choices=("start", "middle", "end"),
-                    type=str, default=DEFAULT_TEXT_ANCHOR, help=f"テキストのアンカー. (デフォルト値: {DEFAULT_TEXT_ANCHOR})")
+                    type=str, default=settings['text_anchor'], help=f"テキストのアンカー. (デフォルト値: {settings['text_anchor']})")
+parser.add_argument("--line-sep", type=float, default=settings['line_sep'],
+                    help=f"字幕テキストの行間. (デフォルト値: {settings['line_sep']})")
 parser.add_argument("--text-color", type=str,
-                    default=COLOR_BLACK, help=f"テキストの色. (デフォルト値: {COLOR_BLACK})")
+                    default=settings['text_color'], help=f"テキストの色. (デフォルト値: {settings['text_color']})")
 parser.add_argument("--offset-rate", type=float,
-                    default=DEFAULT_OFFSET_RATE, help=f"縁取り用に拡大する割合.基準はフォントサイズ. (デフォルト値: {DEFAULT_OFFSET_RATE})")
+                    default=settings['offset_rate'], help=f"縁取り用に拡大する割合.基準はフォントサイズ. (デフォルト値: {settings['offset_rate']})")
 parser.add_argument("--offset-color", type=str,
-                    default=COLOR_WHITE, help=f"縁取りの色. (デフォルト値: {COLOR_WHITE})")
+                    default=settings['offset_color'], help=f"縁取りの色. (デフォルト値: {settings['offset_color']})")
 parser.add_argument("--offset-stroke", type=str, default=None,
                     help="縁取りの枠線の色.色未指定の場合は枠線を表示しない. (デフォルト値: なし)")
-parser.add_argument("--offset-stroke-rate", type=float, default=DEFAULT_OFFSET_STROKE_RATE,
-                    help=f"縁取りの枠線の幅.基準はフォントサイズ. (デフォルト値: {DEFAULT_OFFSET_STROKE_RATE})")
-
-parser.add_argument("--srt-path", type=str, help="字幕ファイルのパス")
+parser.add_argument("--offset-stroke-rate", type=float, default=settings['offset_stroke_rate'],
+                    help=f"縁取りの枠線の幅.基準はフォントサイズ. (デフォルト値: {settings['offset_stroke_rate']})")
+parser.add_argument("--shadow-color", type=str, default=None,
+                    help="影の色.色未指定の場合は影を表示しない. (デフォルト値: なし)")
+parser.add_argument("--box-color", type=str, default=None,
+                    help="背景色.色未指定の場合は背景を塗り潰さない. (デフォルト値: なし)")
+parser.add_argument("--srt-path", type=str, required=True, help="字幕ファイルのパス")
+parser.add_argument("--config-path", type=str, help="設定ファイル(json形式)のパス")
 parser.add_argument("--export-dir", type=str,
-                    default=DEFAULT_EXPORT_DIR, help=f"作成した字幕画像の出力先dir. (デフォルト値: {DEFAULT_EXPORT_DIR})")
-parser.add_argument("--base-dir", type=str, default=DEFAULT_BASE_DIR,
-                    help=f"相対パスを絶対パスに変換する際に基準とするディレクトリ. (デフォルト値: {DEFAULT_BASE_DIR})")
+                    default=settings['export_dir'], help=f"作成した字幕画像の出力先dir. (デフォルト値: {settings['export_dir']})")
+parser.add_argument("--base-dir", type=str, default=settings['base_dir'],
+                    help=f"相対パスを絶対パスに変換する際に基準とするディレクトリ. (デフォルト値: {settings['base_dir']})")
 
 args = parser.parse_args(rest_args)
+# print(args)
+settings.update(vars(args))
 
-srt_path = expand_path(args.srt_path, args.base_dir)
-export_dir = expand_path(args.export_dir, args.base_dir)
+if args.config_path:
+    config_path = expand_path(args.config_path, settings["base_dir"])
+    with open(config_path) as f:
+        config = json.load(f)
+        settings.update(config)
+
+print(settings)
+
+srt_path = expand_path(args.srt_path, settings["base_dir"])
+export_dir = expand_path(settings["export_dir"], settings["base_dir"])
 # print(args, srt_path, export_dir)
 if not os.path.isdir(export_dir):
     os.makedirs(export_dir)
 
 items = read_srt_file(srt_path)
-offset_size = args.offset_rate * args.font_size
-style = {"fill": args.offset_color}
+offset_size = settings["offset_rate"] * settings["font_size"]
+style = {"fill": settings["offset_color"]}
 
-if args.offset_stroke is not None:
-    offset_stroke_width = args.offset_stroke_rate * args.font_size * pt
-    style["stroke"] = args.offset_stroke
+if settings["offset_stroke"] is not None:
+    offset_stroke_width = settings["offset_stroke_rate"] * settings["font_size"] * pt
+    style["stroke"] = settings["offset_stroke"]
     style["stroke_width"] = offset_stroke_width
 
 effect = path_effect('offset', attempt_force_join=False, is_visible=True, linejoin_type='miter',
                      miter_limit=2, offset=offset_size, unit='pt', update_on_knot_move=True)
 
+filter = None
+if settings["shadow_color"]:
+    filter = create_shadow_filter(settings["shadow_color"], settings["shadow_opacity"],
+                                  settings["shadow_blur_stddeviation"], settings["shadow_dx"], settings["shadow_dy"])
+
 for item in items:
-    g = create_text_group(item['lines'], base=[0, 0], font=args.font_family, font_size=(args.font_size * pt),
-                          font_weight=args.font_weight, fill=args.text_color, text_anchor=args.text_anchor)
-    text_path = export_text_to_path(g, False)
+    text_group = create_text_group(item['lines'], base=[0, 0], font=settings["font_family"],
+                                   font_size=(settings["font_size"] * pt), font_weight=settings["font_weight"],
+                                   fill=settings["text_color"], text_anchor=settings["text_anchor"])
+    text_bb = None
+    if settings["box_color"]:
+        text_bb = text_group.bounding_box()
+
+    text_path = export_text_to_path(text_group, False)
     apply_path_effect(text_path, effect)
-    # print(style)
     text_path.style(**style)
     text_path.z_order('bottom')
+
+    if filter is not None:
+        text_path.style(filter=filter)
+    #     g = group(text_group, text_path, filter=create_flood_filter(args.flood_bg_color))
+    # else:
+    #     g = group(text_group, text_path)
+    target_list = [text_path, text_group]
+
+    if settings["box_color"]:
+        box_margin_x = settings["box_margin_x"] * settings["font_size"] * pt
+        box_margin_y = settings["box_margin_y"] * settings["font_size"] * pt
+        margin_offset_size = settings["offset_rate"] * settings["font_size"] * pt
+        box = create_box(text_bb, settings["box_color"], opacity=settings["box_opacity"],
+                         margin_x=box_margin_x + margin_offset_size, margin_y=box_margin_y + margin_offset_size)
+        box.z_order('bottom')
+        target_list.append(box)
+
     export_path = os.path.join(export_dir, f"{item['no']}.png")
     export_to_png(export_path)
-    remove_objects(text_path, g)
+
+    remove_objects(*target_list)
