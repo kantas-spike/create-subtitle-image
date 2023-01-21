@@ -183,7 +183,6 @@ COLOR_BLACK = "#FFFFFF"
 DEFAULT_OFFSET_RATE = 0.06
 DEFAULT_OFFSET_STROKE_RATE = 0.03
 DEFAULT_BASE_DIR = os.path.expanduser("~")
-DEFAULT_EXPORT_DIR = "~/tmp/create-subtitle-image"
 DEFAULT_BOX_MARGIN_X = 0.5
 DEFAULT_BOX_MARGIN_Y = 0.25
 DEFAULT_BOX_OPACITY = 0.3
@@ -203,7 +202,6 @@ settings = {
     "offset_stroke_rate": DEFAULT_OFFSET_STROKE_RATE,
     "offset_color": COLOR_WHITE,
     "base_dir": DEFAULT_BASE_DIR,
-    "export_dir": DEFAULT_EXPORT_DIR,
     "box_margin_x": DEFAULT_BOX_MARGIN_X,
     "box_margin_y": DEFAULT_BOX_MARGIN_Y,
     "box_opacity": DEFAULT_BOX_OPACITY,
@@ -241,8 +239,7 @@ parser.add_argument("--box-color", type=str, default=None,
                     help="背景色.色未指定の場合は背景を塗り潰さない. (デフォルト値: なし)")
 parser.add_argument("--srt-path", type=str, required=True, help="字幕ファイルのパス")
 parser.add_argument("--config-path", type=str, help="設定ファイル(json形式)のパス")
-parser.add_argument("--export-dir", type=str,
-                    default=settings['export_dir'], help=f"作成した字幕画像の出力先dir. (デフォルト値: {settings['export_dir']})")
+parser.add_argument("--export-dir", type=str, required=True, help="作成した字幕画像の出力先dir.")
 parser.add_argument("--base-dir", type=str, default=settings['base_dir'],
                     help=f"相対パスを絶対パスに変換する際に基準とするディレクトリ. (デフォルト値: {settings['base_dir']})")
 
@@ -256,7 +253,7 @@ if args.config_path:
         config = json.load(f)
         settings.update(config)
 
-print(settings)
+# print(settings)
 
 srt_path = expand_path(args.srt_path, settings["base_dir"])
 export_dir = expand_path(settings["export_dir"], settings["base_dir"])
@@ -311,6 +308,7 @@ for item in items:
         target_list.append(box)
 
     export_path = os.path.join(export_dir, f"{item['no']}.png")
+    print("srt_file: ", srt_path, "export_dir: ", export_path)
     export_to_png(export_path)
 
     remove_objects(*target_list)
