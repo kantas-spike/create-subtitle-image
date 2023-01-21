@@ -225,6 +225,7 @@ parser.add_argument("--line-sep", type=float, default=settings['line_sep'],
                     help=f"字幕テキストの行間. (デフォルト値: {settings['line_sep']})")
 parser.add_argument("--text-color", type=str,
                     default=settings['text_color'], help=f"テキストの色. (デフォルト値: {settings['text_color']})")
+parser.add_argument("--letter-spacing", type=float, default=None, help="文字の間隔. (デフォルト値: なし)")
 parser.add_argument("--offset-rate", type=float,
                     default=settings['offset_rate'], help=f"縁取り用に拡大する割合.基準はフォントサイズ. (デフォルト値: {settings['offset_rate']})")
 parser.add_argument("--offset-color", type=str,
@@ -263,6 +264,13 @@ if not os.path.isdir(export_dir):
 
 items = read_srt_file(srt_path)
 offset_size = settings["offset_rate"] * settings["font_size"]
+letter_spacing = 0
+if settings["letter_spacing"] is None:
+    if offset_size > 0:
+        settings["letter_spacing"] = offset_size * 1.25 * pt
+    else:
+        settings["letter_spacing"] = 0
+
 style = {"fill": settings["offset_color"]}
 
 if settings["offset_stroke"] is not None:
@@ -281,7 +289,7 @@ if settings["shadow_color"]:
 for item in items:
     text_group = create_text_group(item['lines'], base=[0, 0], font=settings["font_family"],
                                    font_size=(settings["font_size"] * pt), font_style=settings["font_style"],
-                                   fill=settings["text_color"], text_anchor=settings["text_anchor"])
+                                   fill=settings["text_color"], text_anchor=settings["text_anchor"], letter_spacing=settings["letter_spacing"])
     text_bb = None
     if settings["box_color"]:
         text_bb = text_group.bounding_box()
