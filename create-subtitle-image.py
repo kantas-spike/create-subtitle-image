@@ -187,9 +187,9 @@ DEFAULT_BOX_MARGIN_X = 0.5
 DEFAULT_BOX_MARGIN_Y = 0.25
 DEFAULT_BOX_OPACITY = 0.3
 DEFAULT_SHADOW_OPACITY = 0.3
-DEFAULT_SHADOW_BLUR = 3.125
-DEFAULT_SHADOW_DX = 2.33645
-DEFAULT_SHADOW_DY = 2.33645
+DEFAULT_SHADOW_BLUR = 1.5
+DEFAULT_SHADOW_DX = 1.5
+DEFAULT_SHADOW_DY = 1.5
 
 settings = {
     "font_size": DEFAULT_FONT_SIZE,
@@ -258,6 +258,9 @@ if args.config_path:
 
 srt_path = expand_path(args.srt_path, settings["base_dir"])
 export_dir = expand_path(settings["export_dir"], settings["base_dir"])
+
+print("srt_file: ", srt_path, "export_dir: ", export_dir)
+
 # print(args, srt_path, export_dir)
 if not os.path.isdir(export_dir):
     os.makedirs(export_dir)
@@ -316,7 +319,6 @@ for item in items:
         target_list.append(box)
 
     export_path = os.path.join(export_dir, f"{item['no']}.png")
-    print("srt_file: ", srt_path, "export_dir: ", export_path)
     export_to_png(export_path)
 
     remove_objects(*target_list)
