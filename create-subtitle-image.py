@@ -216,8 +216,7 @@ parser.add_argument("--font-size", type=float, default=settings['font_size'],
                     help=f"字幕テキストのフォントサイズ(単位:pt). (デフォルト値: {settings['font_size']})")
 parser.add_argument("--font-family", type=str, default=settings['font_family'],
                     help=f"字幕テキストのフォントファミリー. (デフォルト値: {settings['font_family']})")
-parser.add_argument("--font-style", choices=("normal", "bold", "lighter", "bolder", "100", "200", "300", "400", "500",
-                    "600", "700", "800", "900"), type=str, default=settings['font_style'],
+parser.add_argument("--font-style", type=str, default=settings['font_style'],
                     help=f"字幕テキストのフォントのスタイル. (デフォルト値: {settings['font_style']})")
 parser.add_argument("--text-anchor", choices=("start", "middle", "end"),
                     type=str, default=settings['text_anchor'], help=f"テキストのアンカー. (デフォルト値: {settings['text_anchor']})")
@@ -291,7 +290,7 @@ if settings["shadow_color"]:
 
 for item in items:
     text_group = create_text_group(item['lines'], base=[0, 0], font=settings["font_family"],
-                                   font_size=(settings["font_size"] * pt), font_style=settings["font_style"],
+                                   font_size=(settings["font_size"] * pt), font_weight=settings["font_style"],
                                    fill=settings["text_color"], text_anchor=settings["text_anchor"], letter_spacing=settings["letter_spacing"])
     text_bb = None
     if settings["box_color"] or settings["shadow_color"]:
