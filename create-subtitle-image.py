@@ -294,7 +294,7 @@ for item in items:
                                    font_size=(settings["font_size"] * pt), font_style=settings["font_style"],
                                    fill=settings["text_color"], text_anchor=settings["text_anchor"], letter_spacing=settings["letter_spacing"])
     text_bb = None
-    if settings["box_color"]:
+    if settings["box_color"] or settings["shadow_color"]:
         text_bb = text_group.bounding_box()
 
     text_path = export_text_to_path(text_group, False)
@@ -317,6 +317,18 @@ for item in items:
                          margin_x=box_margin_x + margin_offset_size, margin_y=box_margin_y + margin_offset_size)
         box.z_order('bottom')
         target_list.append(box)
+    elif settings["shadow_color"]:
+        box_margin_x = settings["box_margin_x"] * settings["font_size"] * pt
+        box_margin_y = settings["box_margin_y"] * settings["font_size"] * pt
+        margin_offset_size = settings["offset_rate"] * settings["font_size"] * pt
+        shadow_offset_x = settings["shadow_dx"] * 2
+        shadow_offset_y = settings["shadow_dy"] * 2
+        box = create_box(text_bb, settings["box_color"], opacity=0,
+                         margin_x=box_margin_x + margin_offset_size + shadow_offset_x,
+                         margin_y=box_margin_y + margin_offset_size + shadow_offset_y)
+        box.z_order('bottom')
+        target_list.append(box)
+
 
     export_path = os.path.join(export_dir, f"{item['no']}.png")
     export_to_png(export_path)
