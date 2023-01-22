@@ -244,7 +244,7 @@ parser.add_argument("--export-dir", type=str, required=True, help="作成した�
 parser.add_argument("--base-dir", type=str, default=settings['base_dir'],
                     help=f"相対パスを絶対パスに変換する際に基準とするディレクトリ. (デフォルト値: {settings['base_dir']})")
 
-args = parser.parse_args(rest_args)
+args = parser.parse_args(user_args)
 # print(args)
 settings.update(vars(args))
 
