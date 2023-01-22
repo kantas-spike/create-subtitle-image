@@ -1,5 +1,6 @@
 {
     "font_size": 24,
+    "font_style": "bold",
     "text_color": "#f6691c",
     "offset_color": "#246db2",
     "offset_stroke": "#b7b2b1",
