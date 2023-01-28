@@ -5,7 +5,8 @@ export DYLD_LIBRARY_PATH=/Applications/Inkscape.app/Contents/Resources/lib
 export PYTHONPATH=/Applications/Inkscape.app/Contents/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages:/Applications/Inkscape.app/Contents/Resources/share/inkscape/extensions
 
 # `Simple Inkscape Scripting`で実行するスクリプトは、カレントディレクトリが拡張機能のディレクトリになるため、`--base-dir`に本スクリプトのディレクトリを指定しています。
-SCRIPT_DIR=$(dirname "$0")
+SCRIPT_PATH=$(realpath "$0")
+SCRIPT_DIR=$(dirname ${SCRIPT_PATH})
 # インプットファイルです。PNGに出力するだけなのでインプットファイルを意識する必要はありません
 DEFAULT_SVG=/Applications/Inkscape.app/Contents/Resources/share/inkscape/templates/default.svg
 # 不要な出力を潰すためにsvgファイルに出力しています。ファイルのパスは自由に変更してください
