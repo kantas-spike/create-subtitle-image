@@ -33,9 +33,9 @@ cd create-subtitle-image
 $ pwd
 ~/work/create-subtitle-image
 $ sh ./create-subtitle-image.sh
-usage: create-subtitle-image [-h] [--font-size FONT_SIZE] [--font-family FONT_FAMILY] [--font-style FONT_STYLE] [--text-anchor {start,middle,end}] [--line-sep LINE_SEP] [--text-color TEXT_COLOR] [--letter-spacing LETTER_SPACING] [--offset-rate OFFSET_RATE]
-                             [--offset-color OFFSET_COLOR] [--offset-stroke OFFSET_STROKE] [--offset-stroke-rate OFFSET_STROKE_RATE] [--shadow-color SHADOW_COLOR] [--box-color BOX_COLOR] --srt-path SRT_PATH [--config-path CONFIG_PATH] --export-dir EXPORT_DIR
-                             [--base-dir BASE_DIR]
+usage: create-subtitle-image [-h] [--font-size FONT_SIZE] [--font-family FONT_FAMILY] [--font-style FONT_STYLE] [--text-anchor {start,middle,end}] [--line-sep LINE_SEP] [--text-color TEXT_COLOR]
+                             [--letter-spacing LETTER_SPACING] [--offset-rate OFFSET_RATE] [--offset-color OFFSET_COLOR] [--offset-stroke OFFSET_STROKE] [--offset-stroke-rate OFFSET_STROKE_RATE] [--shadow-color SHADOW_COLOR]
+                             [--box-color BOX_COLOR] [--export-ids [EXPORT_IDS ...]] --srt-path SRT_PATH [--config-path CONFIG_PATH] --export-dir EXPORT_DIR [--base-dir BASE_DIR]
 
 options:
   -h, --help            show this help message and exit
@@ -64,6 +64,8 @@ options:
                         影の色.色未指定の場合は影を表示しない. (デフォルト値: なし)
   --box-color BOX_COLOR
                         背景色.色未指定の場合は背景を塗り潰さない. (デフォルト値: なし)
+  --export-ids [EXPORT_IDS ...]
+                        出力する字幕番号. 未指定時は全ての字幕を出力する
   --srt-path SRT_PATH   字幕ファイルのパス
   --config-path CONFIG_PATH
                         設定ファイル(json形式)のパス
@@ -82,6 +84,13 @@ options:
 
 ~~~sh
 sh ./create-subtitle-image.sh --srt-path 字幕ファイルのパス --export-dir 画像出力先ディレクトリ
+~~~
+
+特定のNoの字幕のみ画像出力する場合
+
+~~~sh
+# 字幕No 2, 5のみ出力する場合
+sh ./create-subtitle-image.sh --srt-path 字幕ファイルのパス --export-dir 画像出力先ディレクトリ --export-ids 2 5
 ~~~
 
 #### 例01
