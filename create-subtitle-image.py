@@ -237,6 +237,7 @@ parser.add_argument("--shadow-color", type=str, default=None,
                     help="影の色.色未指定の場合は影を表示しない. (デフォルト値: なし)")
 parser.add_argument("--box-color", type=str, default=None,
                     help="背景色.色未指定の場合は背景を塗り潰さない. (デフォルト値: なし)")
+parser.add_argument("--export-ids", type=int, nargs='*', default=[], help="出力する字幕番号. 未指定時は全ての字幕を出力する")
 parser.add_argument("--srt-path", type=str, required=True, help="字幕ファイルのパス")
 parser.add_argument("--config-path", type=str, help="設定ファイル(json形式)のパス")
 parser.add_argument("--export-dir", type=str, required=True, help="作成した字幕画像の出力先dir.")
@@ -244,7 +245,7 @@ parser.add_argument("--base-dir", type=str, default=settings['base_dir'],
                     help=f"相対パスを絶対パスに変換する際に基準とするディレクトリ. (デフォルト値: {settings['base_dir']})")
 
 args = parser.parse_args(user_args)
-# print(args)
+print(args)
 settings.update(vars(args))
 
 if args.config_path:
@@ -289,6 +290,9 @@ if settings["shadow_color"]:
                                   settings["shadow_blur_stddeviation"], settings["shadow_dx"], settings["shadow_dy"])
 
 for item in items:
+    if len(args.export_ids) > 0 and (item['no'] not in args.export_ids):
+        continue
+
     text_group = create_text_group(item['lines'], base=[0, 0], font=settings["font_family"],
                                    font_size=(settings["font_size"] * pt), font_weight=settings["font_style"],
                                    fill=settings["text_color"], text_anchor=settings["text_anchor"], letter_spacing=settings["letter_spacing"])
