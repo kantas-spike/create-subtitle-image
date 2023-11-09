@@ -12,3 +12,7 @@ install: ./create-subtitle-image.sh ./create-subtitle-image.py
 clean:
 	rm ${BIN_DIR}/create-subtitle-image.sh
 	rm -r ${DST_DIR}
+
+reinstall:
+	make clean
+	make install

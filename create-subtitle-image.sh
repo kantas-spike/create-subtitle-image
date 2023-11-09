@@ -1,6 +1,7 @@
 # 自分の環境に合せてInkscapeのパスを修正してください
 INKSCAPE_PYTHON=/Applications/Inkscape.app/Contents/Resources/bin/python3
-SIMPINKSCR_SCRIPT=~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/extensions/SimpInkScr/simpinkscr/simple_inkscape_scripting.py
+SIMPINKSCR_SCRIPT=~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/extensions/org.inkscape.extension.29361/simple_inkscape_scripting/simpinkscr/simple_inkscape_scripting.py
+#SIMPINKSCR_SCRIPT=~/Library/Application\ Support/org.inkscape.Inkscape/config/inkscape/extensions/SimpInkScr/simpinkscr/simple_inkscape_scripting.py
 export DYLD_LIBRARY_PATH=/Applications/Inkscape.app/Contents/Resources/lib
 export PYTHONPATH=/Applications/Inkscape.app/Contents/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages:/Applications/Inkscape.app/Contents/Resources/share/inkscape/extensions
 
