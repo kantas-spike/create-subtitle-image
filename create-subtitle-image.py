@@ -153,7 +153,11 @@ def create_text_group(texts, base=[0, 0], line_sep=1.1, **styles):
 
         base[1] += font_size * line_sep
 
-    return txt_obj
+    if len(texts) == 1:
+        grp = group([txt_obj], **styles)
+        return grp
+    else:
+        return txt_obj
 
 
 def expand_path(path, base_dir):
