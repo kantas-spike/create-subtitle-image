@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import json
 import os
 import re
+from io import open
 
 
 def time_to_delta(t):
