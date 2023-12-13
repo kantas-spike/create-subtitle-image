@@ -13,6 +13,16 @@ def time_to_delta(t):
 
 
 def read_srt_file(path):
+    """
+    字幕ファイルを読み込む
+
+    :param str path: 字幕ファイル(SubRip形式)のパス
+    :return itemのリスト
+            itemは以下の形式
+            {"no": 1からの連番,
+             "time_info": {"start": timedelta, "end": timedelter},
+             "lines": 字幕文字列の配列 }
+    """
     item_list = []
     with open(path, encoding="utf-8") as f:
         item = {}
