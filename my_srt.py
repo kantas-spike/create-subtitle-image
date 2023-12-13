@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 import json
 import os
@@ -24,7 +25,7 @@ def read_srt_file(path):
                 item["no"] = int(line)
             elif len(item) == 1:
                 if "-->" not in line:
-                    raise ValueError(f"Bad time format:{item}")
+                    raise ValueError("Bad time format:{}".format(item))
                 item["time_info"] = parse_line_of_time(line)
             elif len(item) == 2:
                 item["lines"] = []
@@ -57,13 +58,15 @@ def parse_line_of_time(line):
         return results
 
 
-def hex_to_rgba(hex_str: str):
+def hex_to_rgba(hex_str):
     if not hex_str.startswith("#"):
-        raise ValueError(f"#から始まる16進を指定してください: {hex_str}")
+        raise ValueError("#から始まる16進を指定してください: {}".format(hex_str))
     hex_len = len(hex_str) - 1
     # 8桁、6桁、4桁、3桁
     if hex_len not in [8, 6, 4, 3]:
-        raise ValueError(f"#RRGGBBAA,#RRGGBB,#RGBA,#RGBのいずれかの形式を指定してください: {hex_str}")
+        raise ValueError(
+            "#RRGGBBAA,#RRGGBB,#RGBA,#RGBのいずれかの形式を指定してください: {}".format(hex_str)
+        )
 
     # 8桁形式 or 6桁形式
     pattern = r"#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})?"
@@ -72,8 +75,10 @@ def hex_to_rgba(hex_str: str):
     if hex_len in [3, 4]:
         pattern = r"#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])?"
         max_value = 0xF
-
-    if m := re.match(pattern, hex_str):
+    m = re.match(pattern, hex_str)
+    if m:
         return [int(c, 16) / max_value for c in m.groups(hex(max_value))]
     else:
-        raise ValueError(f"#RRGGBBAA,#RRGGBB,#RGBA,#RGBのいずれかの形式を指定してください: {hex_str}")
+        raise ValueError(
+            "#RRGGBBAA,#RRGGBB,#RGBA,#RGBのいずれかの形式を指定してください: {}".format(hex_str)
+        )
