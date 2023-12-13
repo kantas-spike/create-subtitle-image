@@ -6,9 +6,9 @@ def create_command_line(
     additional_sys_path, srt_path, config_path, output_dir, gimp_path="gimp"
 ):
     cmd = (
-        f"{gimp_path} -dsc --batch-interpreter python-fu-eval "
+        f"{gimp_path} -idsc --batch-interpreter python-fu-eval "
         f'--batch "import sys;sys.path=[{repr(additional_sys_path)}]+sys.path;'
-        "import my_settings; import my_srt; import subtitle_creator;"
+        "import subtitle_creator;"
         f'subtitle_creator.run({repr(srt_path)}, {repr(config_path)}, {repr(output_dir)})"'
     )
     return cmd
