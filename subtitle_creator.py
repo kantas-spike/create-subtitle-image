@@ -100,10 +100,14 @@ def generate_subtitles(subtitles, settings, output_dir):
 
 def run(srt_path, config_path, output_path):
     print("run!!: ", srt_path, config_path, output_path)
+    abs_config_path = os.path.abspath(config_path)
+    config = my_settings.read_config_file(abs_config_path)
+    print(config)
     abs_outpath = os.path.abspath(output_path)
+
     if not os.path.exists(abs_outpath):
         os.makedirs(abs_outpath)
     subtitles = my_srt.read_srt_file(os.path.abspath(srt_path))
-    generate_subtitles(subtitles, {}, abs_outpath)
+    generate_subtitles(subtitles, config, abs_outpath)
     # gimp終了
     pdb.gimp_quit(1)
