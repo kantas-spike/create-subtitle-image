@@ -28,9 +28,17 @@ if __name__ == "__main__":
     parser.add_argument(
         "-c", "--config", required=True, help="設定ファイルパス", metavar="CONFIG_PATH"
     )
+
+    DEFAULT_OUTPUT_DIR = "./_images"
     parser.add_argument(
-        "-o", "--output-dir", required=True, help="出力ディレクトリ", metavar="OUTPUT_DIR"
+        "-o",
+        "--output-dir",
+        required=False,
+        help=f"出力ディレクトリ(デフォルト: {DEFAULT_OUTPUT_DIR})",
+        metavar="OUTPUT_DIR",
+        default=DEFAULT_OUTPUT_DIR,
     )
+
     DEFAULT_SYSTEM_PATH = "."
     parser.add_argument(
         "--system-path",
