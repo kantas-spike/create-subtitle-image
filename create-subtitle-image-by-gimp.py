@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import subprocess
 
@@ -7,6 +8,7 @@ def create_command_line(
     srt_path,
     config_path,
     output_dir,
+    default_settings_path,
     debug=False,
     gimp_path="gimp",
 ):
@@ -16,7 +18,8 @@ def create_command_line(
         f'--batch "import sys;sys.path=[{repr(additional_sys_path)}]+sys.path;'
         "import subtitle_creator;"
         f"subtitle_creator.run({repr(srt_path)}, "
-        f'{repr(config_path)}, {repr(output_dir)}, {debug})"'
+        f"{repr(config_path)}, {repr(output_dir)}, "
+        f'{repr(default_settings_path)}, {debug})"'
     )
     return cmd
 
@@ -54,6 +57,14 @@ if __name__ == "__main__":
         metavar="SYSTEM_PATH",
         default=DEFAULT_SYSTEM_PATH,
     )
+    DEFAULT_SETTINGS_PATH = "./default_settings.json"
+    parser.add_argument(
+        "--default-settings-path",
+        required=False,
+        help=f"デフォルトの設定ファイルパス(デフォルト: {DEFAULT_SETTINGS_PATH})",
+        metavar="DEFAULT_SETTINGS_PATH",
+        default=DEFAULT_SETTINGS_PATH,
+    )
     DEFAULT_GIMP_PATH = "gimp"
     parser.add_argument(
         "--gimp-path",
@@ -68,7 +79,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args)
     cmdline = create_command_line(
-        args.system_path, args.srt, args.config, args.output_dir, args.debug
+        args.system_path,
+        args.srt,
+        args.config,
+        args.output_dir,
+        args.default_settings_path,
+        args.debug,
     )
     print("cmdline:", cmdline)
     run_gimp(cmdline)

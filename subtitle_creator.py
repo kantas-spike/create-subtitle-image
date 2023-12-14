@@ -222,9 +222,9 @@ def generate_subtitles(subtitles, settings, output_dir, debug=False):
             pdb.gimp_image_delete(image)
 
 
-def run(srt_path, config_path, output_path, debug=False):
+def run(srt_path, config_path, output_path, default_settings_path, debug=False):
     print("run!!: ", srt_path, config_path, output_path)
-    default_config_path = os.path.abspath("./default_settings.json")
+    default_config_path = os.path.abspath(default_settings_path)
     default_config = my_settings.read_config_file(default_config_path)
     print(default_config)
     abs_config_path = os.path.abspath(config_path)
