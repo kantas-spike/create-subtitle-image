@@ -9,6 +9,7 @@
       "font_family": "Noto Sans JP Bold",
       "size": 48,
       "color": "#40516a",
+      "line_space_rate": -0.3,
       "justification": "center"
     },
     "borders": [

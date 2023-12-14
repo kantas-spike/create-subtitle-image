@@ -22,7 +22,9 @@ def to_str(utf_str):
     return utf_str.encode("ascii", "ignore")
 
 
-def add_text(target_layer, text, hexColor, font_name, font_size, justify):
+def add_text(
+    target_layer, text, hexColor, font_name, font_size, justify, line_space_rate
+):
     image = pdb.gimp_item_get_image(target_layer)
     text_layer = pdb.gimp_text_fontname(
         image,
@@ -43,7 +45,7 @@ def add_text(target_layer, text, hexColor, font_name, font_size, justify):
     # offsetを初期化
     pdb.gimp_layer_set_offsets(text_layer, 0, 0)
     # 行間を調整
-    # pdb.gimp_text_layer_set_line_spacing(text_layer, font_size * -0.25)
+    pdb.gimp_text_layer_set_line_spacing(text_layer, font_size * line_space_rate)
     return text_layer
 
 
@@ -120,6 +122,7 @@ def generate_subtitles(subtitles, settings, output_dir, debug=False):
             to_str(text_setting["font_family"]),
             font_size,
             to_str(text_setting["justification"]),
+            text_setting["line_space_rate"],
         )
 
         canvas_setting = settings["canvas"]
