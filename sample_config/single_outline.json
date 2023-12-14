@@ -1,0 +1,15 @@
+{
+  "with_shadow": false,
+  "with_borders": 1,
+  "with_box": false,
+  "style": {
+    "text": {
+      "font_family": "Dela Gothic One",
+      "size": 48,
+      "color": "#c4c837",
+      "align": "center",
+      "line_space_rate": -0.3
+    },
+    "borders": [{ "color": "#377ac8", "rate": 0.08, "feather": 0 }]
+  }
+}

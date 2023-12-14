@@ -1,0 +1,26 @@
+{
+  "with_shadow": true,
+  "with_borders": 2,
+  "with_box": true,
+  "style": {
+    "text": {
+      "font_family": "Noto Sans JP Bold",
+      "size": 48,
+      "color": "#f3ffed",
+      "align": "center",
+      "line_space_rate": -0.3
+    },
+    "borders": [
+      { "color": "#0f491e", "rate": 0.08, "feather": 0 },
+      { "color": "#f0e2c5", "rate": 0.08, "feather": 0 }
+    ],
+    "box": {
+      "color": "#888888"
+    },
+    "shadow": {
+      "offset_x": 5,
+      "offset_y": 5,
+      "blur_radius": 15
+    }
+  }
+}
