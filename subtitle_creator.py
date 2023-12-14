@@ -4,6 +4,8 @@ import my_srt
 from gimpfu import *
 import os
 
+MAX_NUM_OF_BORDERS = 2
+
 
 def get_justyfy(name):
     if name == "left":
@@ -135,7 +137,8 @@ def generate_subtitles(subtitles, settings, output_dir, debug=False):
         pdb.gimp_layer_resize(tmp_layer, w, h, offset_x, offset_y)
         pdb.gimp_image_resize(image, w, h, offset_x, offset_y)
 
-        for i in range(settings["with_borders"]):
+        num_of_borders = min(MAX_NUM_OF_BORDERS, settings["with_borders"])
+        for i in range(num_of_borders):
             border_setting = settings["style"]["borders"][i]
             if not border_setting:
                 print("{}に該当するボーダー設定がありません".format(i))
