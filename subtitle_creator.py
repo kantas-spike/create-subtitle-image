@@ -116,7 +116,7 @@ def generate_subtitles(subtitles, settings, output_dir, debug=False):
             to_str(text_setting["color"]),
             "Noto Sans JP Bold",
             48,
-            to_str(text_setting["align"]),
+            to_str(text_setting["justification"]),
         )
 
         font_size = text_setting["size"]
