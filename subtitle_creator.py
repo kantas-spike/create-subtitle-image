@@ -72,25 +72,25 @@ def generate_subtitles(subtitles, settings, output_dir):
 
         # テキストをレイヤーに貼り付け
         pdb.gimp_floating_sel_anchor(text_layer)
-
+        # レイヤーのサイズ修正
         pdb.gimp_layer_resize(tmp_layer, w, h, 0, 0)
-        pdb.gimp_image_resize(image, w, h, 0, 0)
+
+        # 可視レイヤーを1つに統合
+        merged_layer = pdb.gimp_image_merge_visible_layers(image, CLIP_TO_IMAGE)
 
         # 可視領域を選択
-        pdb.gimp_image_select_item(image, CHANNEL_OP_ADD, tmp_layer)
+        pdb.gimp_image_select_item(image, CHANNEL_OP_ADD, merged_layer)
         # 選択範囲が無い場合終了
         (non_empty, x1, y1, x2, y2) = pdb.gimp_selection_bounds(image)
         if non_empty == 0:
             print("選択領域がないため無視!!")
         else:
-            offset_x, offset_y = pdb.gimp_drawable_offsets(tmp_layer)
+            offset_x, offset_y = pdb.gimp_drawable_offsets(merged_layer)
             new_w = x2 - x1
             new_h = y2 - y1
             pdb.gimp_image_resize(image, new_w, new_h, x1 * -1, y1 * -1)
             # 画像出力
             output_path = os.path.join(output_dir, "{}.png".format(st["no"]))
-            # 可視レイヤーを1つに統合
-            merged_layer = pdb.gimp_image_merge_visible_layers(image, CLIP_TO_IMAGE)
             pdb.gimp_file_save(image, merged_layer, output_path, output_path)
 
         # imageの削除
