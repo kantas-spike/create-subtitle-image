@@ -109,19 +109,18 @@ def generate_subtitles(subtitles, settings, output_dir, debug=False):
         image = pdb.gimp_image_new(10, 10, RGB)
         tmp_layer = add_layer(image, "字幕")
         text_setting = settings["style"]["text"]
+        font_size = text_setting["size"]
         # 字幕作成
         text_layer = add_text(
             tmp_layer,
             "\n".join(st["lines"]),
             to_str(text_setting["color"]),
-            "Noto Sans JP Bold",
-            48,
+            to_str(text_setting["font_family"]),
+            font_size,
             to_str(text_setting["justification"]),
         )
 
-        font_size = text_setting["size"]
         canvas_setting = settings["canvas"]
-
         offset_x = font_size * canvas_setting["padding_x_rate"]
         offset_y = font_size * canvas_setting["padding_y_rate"]
         text_w = pdb.gimp_drawable_width(text_layer)
