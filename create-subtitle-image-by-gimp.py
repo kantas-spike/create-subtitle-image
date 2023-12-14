@@ -3,13 +3,20 @@ import subprocess
 
 
 def create_command_line(
-    additional_sys_path, srt_path, config_path, output_dir, gimp_path="gimp"
+    additional_sys_path,
+    srt_path,
+    config_path,
+    output_dir,
+    debug=False,
+    gimp_path="gimp",
 ):
+    option = "-dsc" if debug else "-idsc"
     cmd = (
-        f"{gimp_path} -idsc --batch-interpreter python-fu-eval "
+        f"{gimp_path} {option} --batch-interpreter python-fu-eval "
         f'--batch "import sys;sys.path=[{repr(additional_sys_path)}]+sys.path;'
         "import subtitle_creator;"
-        f'subtitle_creator.run({repr(srt_path)}, {repr(config_path)}, {repr(output_dir)})"'
+        f"subtitle_creator.run({repr(srt_path)}, "
+        f'{repr(config_path)}, {repr(output_dir)}, {debug})"'
     )
     return cmd
 
@@ -55,10 +62,13 @@ if __name__ == "__main__":
         metavar="GIMP_PATH",
         default=DEFAULT_GIMP_PATH,
     )
+    parser.add_argument(
+        "--debug", default=False, action="store_true", help="デバッグモードで実行する"
+    )
     args = parser.parse_args()
     print(args)
     cmdline = create_command_line(
-        args.system_path, args.srt, args.config, args.output_dir
+        args.system_path, args.srt, args.config, args.output_dir, args.debug
     )
     print("cmdline:", cmdline)
     run_gimp(cmdline)
