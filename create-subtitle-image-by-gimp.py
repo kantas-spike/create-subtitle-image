@@ -10,7 +10,7 @@ def create_command_line(
     debug=False,
     gimp_path="gimp",
 ):
-    option = "-dsc" if debug else "-idsc"
+    option = "-dsc" if debug else "-ids"
     cmd = (
         f"{gimp_path} {option} --batch-interpreter python-fu-eval "
         f'--batch "import sys;sys.path=[{repr(additional_sys_path)}]+sys.path;'
