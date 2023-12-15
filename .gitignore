@@ -1,1 +1,4 @@
 *.pyc
+.DS_Store
+_images/
+create-subtitle-image-by-gimp.sh
