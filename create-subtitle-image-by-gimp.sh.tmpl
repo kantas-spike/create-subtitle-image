@@ -1,0 +1,5 @@
+SCRIPT_PATH={@@SCRIPT_PATH@@}
+LIB_PATH={@@LIB_PATH@@}
+DEFAULT_SETTINGS_PATH={@@CONFIG_PATH@@}/default_settings.json
+
+python "${SCRIPT_PATH}" --system-path "${LIB_PATH}" --default-settings-path "${DEFAULT_SETTINGS_PATH}" "$@"
