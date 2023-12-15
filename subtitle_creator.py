@@ -227,20 +227,24 @@ def generate_subtitles(subtitles, settings, output_dir, debug=False):
             pdb.gimp_image_delete(image)
 
 
+def expand_abspath(path):
+    return os.path.abspath(os.path.expanduser(path))
+
+
 def run(srt_path, config_path, output_path, default_settings_path, debug=False):
     print("run!!: ", srt_path, config_path, output_path)
-    default_config_path = os.path.abspath(default_settings_path)
+    default_config_path = expand_abspath(default_settings_path)
     default_config = my_settings.read_config_file(default_config_path)
     print(default_config)
-    abs_config_path = os.path.abspath(config_path)
+    abs_config_path = expand_abspath(config_path)
     config = my_settings.read_config_file(abs_config_path)
     print(config)
     merged_config = my_settings.merge_settings(default_config, config)
     print(merged_config)
-    abs_outpath = os.path.abspath(output_path)
+    abs_outpath = expand_abspath(output_path)
     if not os.path.exists(abs_outpath):
         os.makedirs(abs_outpath)
-    subtitles = my_srt.read_srt_file(os.path.abspath(srt_path))
+    subtitles = my_srt.read_srt_file(expand_abspath(srt_path))
     generate_subtitles(subtitles, merged_config, abs_outpath, debug)
     # gimp終了
     if not debug:
